@@ -1,35 +1,62 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid';
+
+import {
+  fetchAllContacts,
+  fetchAddContact,
+  fetchDeleteContact,
+} from './operations';
 
 const slice = createSlice({
   name: 'myStore',
   initialState: {
-    contacts: [],
+    contacts: {
+      items: [],
+      isLoading: false,
+      error: null,
+    },
     filter: '',
   },
-  reducers: {
-    addContact: {
-      reducer: (store, { payload }) => {
-        store.contacts.push(payload);
-      },
-      prepare: data => {
-        return {
-          payload: {
-            id: nanoid(),
-            ...data,
-          },
-        };
-      },
-    },
-    deleteContact: (store, { payload }) => {
-      const result = store.contacts.filter(item => item.id !== payload);
-      return { ...store, contacts: result };
-    },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchAllContacts.pending, store => {
+        store.contacts.isLoading = true;
+      })
+      .addCase(fetchAllContacts.fulfilled, (store, { payload }) => {
+        store.contacts.isLoading = false;
+        store.contacts.items = payload;
+      })
+      .addCase(fetchAllContacts.rejected, (store, { payload }) => {
+        store.contacts.isLoading = false;
+        store.contacts.error = payload;
+      })
+      .addCase(fetchAddContact.pending, store => {
+        store.contacts.isLoading = true;
+      })
+      .addCase(fetchAddContact.fulfilled, (store, { payload }) => {
+        store.contacts.isLoading = false;
+        store.contacts.items.push(payload);
+      })
+      .addCase(fetchAddContact.rejected, (store, { payload }) => {
+        store.contacts.isLoading = false;
+        store.contacts.error = payload;
+      })
+      .addCase(fetchDeleteContact.pending, store => {
+        store.contacts.isLoading = true;
+      })
+      .addCase(fetchDeleteContact.fulfilled, (store, { payload }) => {
+        store.contacts.isLoading = false;
+        const index = store.contacts.items.findIndex(
+          contact => contact.id === payload.id
+        );
+        store.contacts.items.splice(index, 1);
+      });
+  },
+  reducer: {
     setFilter: (store, { payload }) => {
-      return { ...store, filter: payload };
+      store.filter = payload;
     },
   },
 });
+export const { setFilter } = slice.actions;
 
-export const { addContact, deleteContact, setFilter } = slice.actions;
 export default slice.reducer;

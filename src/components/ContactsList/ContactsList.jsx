@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import scss from './contacts-list.module.scss';
 import ContactsItem from 'components/ContactsItem';
 
-const ContactsList = ({ contacts, removeContact }) => {
-  const myContacts = contacts.map(({ id, name, number }) => {
+const ContactsList = ({ items, removeContact }) => {
+  const myContacts = items.map(({ id, name, number }) => {
     return (
       <ContactsItem
         key={id}
@@ -20,11 +20,11 @@ const ContactsList = ({ contacts, removeContact }) => {
 export default ContactsList;
 
 ContactsList.defaultProps = {
-  contacts: [],
+  items: [],
 };
 
 ContactsList.propType = {
-  contacts: PropTypes.arrayOf(
+  items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
