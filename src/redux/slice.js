@@ -49,12 +49,14 @@ const slice = createSlice({
           contact => contact.id === payload.id
         );
         store.contacts.items.splice(index, 1);
+      })
+      .addCase(fetchDeleteContact.rejected, (store, { payload }) => {
+        store.contacts.isLoading = false;
+        store.contacts.error = payload;
       });
   },
   reducer: {
-    setFilter: (store, { payload }) => {
-      store.filter = payload;
-    },
+    setFilter: (_, { payload }) => payload,
   },
 });
 export const { setFilter } = slice.actions;
