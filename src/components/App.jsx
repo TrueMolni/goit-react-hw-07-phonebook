@@ -28,7 +28,7 @@ const App = () => {
     dispatch(fetchAddContact({ name, number }));
   };
 
-  const handleDeleteContact = ({ id }) => {
+  const handleDeleteContact = ( id ) => {
     dispatch(fetchDeleteContact(id));
   };
 
